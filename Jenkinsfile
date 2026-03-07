@@ -5,12 +5,11 @@ pipeline {
     stages {
         stage('build app') {
             steps {
-                script {
-                    echo "building the application..."
-                }
+               script {
+                   echo "building the application..."
+               }
             }
         }
-
         stage('build image') {
             steps {
                 script {
@@ -18,29 +17,15 @@ pipeline {
                 }
             }
         }
-
         stage('deploy') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
+            }
             steps {
-                // Proper way to inject AWS credentials
-                withCredentials([
-                    [
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'jenkins_aws_access_key_id'
-                    ]
-                ]) {
-                    script {
-                        echo "Deploying Docker image..."
-                        sh '''
-                        # Verify AWS credentials
-                        aws sts get-caller-identity
-
-                        # Configure kubectl for EKS
-                        aws eks update-kubeconfig --region us-east-2 --name my-cluster
-
-                        # Update deployment with new Docker image
-                        kubectl set image deployment/nginx-deployment nginx=bigkola1/kola-demo-app:jma-1.1 --record
-                        '''
-                    }
+                script {
+                   echo 'deploying docker image...'
+                   sh 'kubectl create deployment nginx-deployment --image=nginx'
                 }
             }
         }
