@@ -33,7 +33,9 @@ pipeline {
                     echo 'deploying docker image...'
                     sh '''
                         aws sts get-caller-identity
-                        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+                        mkdir -p $WORKSPACE/.kube
+                        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --kubeconfig $WORKSPACE/.kube/config
+                        export KUBECONFIG=$WORKSPACE/.kube/config
                         kubectl config current-context
                         kubectl get nodes
                         kubectl create deployment nginx-deployment --image=nginx
