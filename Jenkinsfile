@@ -2,14 +2,16 @@
 
 pipeline {
     agent any
+
     stages {
         stage('build app') {
             steps {
-               script {
-                   echo "building the application..."
-               }
+                script {
+                    echo "building the application..."
+                }
             }
         }
+
         stage('build image') {
             steps {
                 script {
@@ -17,16 +19,25 @@ pipeline {
                 }
             }
         }
+
         stage('deploy') {
             environment {
-                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_ACCESS_KEY_ID     = credentials('jenkins_aws_access_key_id')
                 AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
-                AWS_REGION = credentials('jenkins_aws_region')
+                AWS_REGION            = 'us-east-2'
+                AWS_DEFAULT_REGION    = 'us-east-2'
+                CLUSTER_NAME          = 'my-cluster'
             }
             steps {
                 script {
-                   echo 'deploying docker image...'
-                   sh 'kubectl create deployment nginx-deployment --image=nginx'
+                    echo 'deploying docker image...'
+                    sh '''
+                        aws sts get-caller-identity
+                        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+                        kubectl config current-context
+                        kubectl get nodes
+                        kubectl create deployment nginx-deployment --image=nginx
+                    '''
                 }
             }
         }
