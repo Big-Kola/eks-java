@@ -56,7 +56,7 @@ pipeline {
         stage('commit version update'){
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'gitlab-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
                         sh "git remote set-url origin git@github.com:Big-Kola/eks-java.git"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
