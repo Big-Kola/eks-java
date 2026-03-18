@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building application jar...'
-                    buildJar()   // uses vars/buildJar.groovy
+                    buildJar()
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    buildImage(env.IMAGE_NAME)   // uses vars/buildImage.groovy
+                    buildImage(env.IMAGE_NAME)
                     dockerLogin()
                     dockerPush(env.IMAGE_NAME)
                 }
