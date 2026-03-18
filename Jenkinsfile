@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 // Load your shared library from your GitHub repo
-library identifier: 'jenkins-shared-library@master', retriever: modernSCM(
+library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
   [$class: 'GitSCMSource',
    remote: 'https://github.com/Big-Kola/jenkins-shared-library.git',
    credentialsId: 'git-creds'
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building application jar...'
-                    buildJar()
+                    buildJar()   // uses vars/buildJar.groovy
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    buildImage(env.IMAGE_NAME)
+                    buildImage(env.IMAGE_NAME)   // uses vars/buildImage.groovy
                     dockerLogin()
                     dockerPush(env.IMAGE_NAME)
                 }
