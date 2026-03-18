@@ -1,9 +1,9 @@
 #!/usr/bin/env groovy
 
 // Load your shared library from your GitHub repo
-library identifier: 'jenkins-shared-library@jenkins-shared-library', retriever: modernSCM(
+library identifier: 'jenkins-shared-library@master', retriever: modernSCM(
   [$class: 'GitSCMSource',
-   remote: 'https://github.com/Big-Kola/eks-java.git',
+   remote: 'https://github.com/Big-Kola/jenkins-shared-library.git',
    credentialsId: 'git-creds'
   ]
 )
